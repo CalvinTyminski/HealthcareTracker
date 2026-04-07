@@ -12,7 +12,7 @@ const createPatient = async (req, res) => {
 const getAllPatients = async (req, res) => {
     try {
         const patients = await Patient.find;
-        res.json(patients)
+        res.status(201).json(patients)
     } catch (err) {
         res.status(500).json({message: err.message});
     }
@@ -28,3 +28,20 @@ const getPatientById = async (req, res) => {
     }
 };
 
+const updatePatient = async (req, res) => {
+    try {
+        const patient = await Patient.findByIdAndUpdate(req.params.id, req.body, {new: true});
+        res.status(201).json(patient)
+    } catch (err) {
+        res.status(500).json({message: err.message});
+    }
+};
+
+const deletePatient = async (req, res) => {
+    try {
+        await Patient.findByIdAndDelete(req.params.id);
+        res.status(201).json({message: "Patient deleted"})
+    } catch (err) {
+        res.status(500).json({message: err.message});
+    }
+};
