@@ -12,11 +12,13 @@ const app = express();
 
 connectDB();
 
+app.use(cors());
+app.use(express.json());
+
 app.use('/api/auth', authRoutes);
 app.use('/api/patients', patientRoutes);
 app.use('/api/medications', medicationRoutes);
-app.use(cors());
-app.use(express.json());
+
 
 app.get('/', (req, res) => {
     res.send('API running...');
