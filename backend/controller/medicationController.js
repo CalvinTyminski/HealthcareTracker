@@ -19,7 +19,7 @@ const getMedicationsByPatient = async (req, res) => {
             patientId: req.params.patientId
         });
 
-        res.status(201).json(meds);
+        res.status(200).json(meds);
     } catch (err) {
         res.status(500).json({message: err.message});
     }
@@ -27,7 +27,7 @@ const getMedicationsByPatient = async (req, res) => {
 
 const administerMedications = async (req, res) => {
     try {
-        const medication = await Medication.findById(req.params.patientId);
+        const medication = await Medication.findById(req.params.id);
         if (!medication) {
             return res.status(404).json({message: "Not found"});
         }
@@ -38,7 +38,7 @@ const administerMedications = async (req, res) => {
 
         await medication.save();
 
-        res.status(201).json(medication);
+        res.status(200).json(medication);
     } catch (err) {
         res.status(500).json({message: err.message});
     }
