@@ -17,7 +17,7 @@ const getMedicationsByPatient = async (req, res) => {
     try {
         const meds = await Medication.find({
             patientId: req.params.patientId
-        });
+        }).populate("administeredBy", "username");
 
         res.status(200).json(meds);
     } catch (err) {
@@ -27,20 +27,21 @@ const getMedicationsByPatient = async (req, res) => {
 
 const administerMedications = async (req, res) => {
     try {
-        const medication = await Medication.findById(req.params.id);
-        if (!medication) {
-            return res.status(404).json({message: "Not found"});
-        }
+        const updated = await Medication.findByIdAndUpdate(
+            req.params.id,
+            {
+                status: "administered",
+                administeredAt: new Date(),
+                administeredBy: req.user.id
+            },
+            { new: true }
+        ).populate("administeredBy", "username");
 
-        medication.status = "administered";
-        medication.administeredAt = new Date();
-        medication.administeredBy = req.user.id;
+        console.log("UPDATED WITH POPULATE:", updated); // ✅ debug
 
-        await medication.save();
-
-        res.status(200).json(medication);
+        res.status(200).json(updated);
     } catch (err) {
-        res.status(500).json({message: err.message});
+        res.status(500).json({ message: err.message });
     }
 };
 
